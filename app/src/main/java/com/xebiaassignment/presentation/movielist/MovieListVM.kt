@@ -7,6 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.xebiaassignment.BuildConfig
 import com.xebiaassignment.app.AssignmentApp
 import com.xebiaassignment.data.utils.Resource
+import com.xebiaassignment.domain.model.MovieDetailData
+import com.xebiaassignment.domain.use_cases.UseCaseMovieDetail
 import com.xebiaassignment.domain.use_cases.UseCaseNwPlaying
 import com.xebiaassignment.domain.use_cases.UseCasePopularMovies
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,7 +23,8 @@ import javax.inject.Inject
 @HiltViewModel
 class MovieListVM @Inject constructor(
     val useCaseNwPlaying: UseCaseNwPlaying,
-    val useCasePopularMovies: UseCasePopularMovies
+    val useCasePopularMovies: UseCasePopularMovies,
+    val useCaseMovieDetail: UseCaseMovieDetail
 ) : ViewModel() {
 
     // Avoiding state to update outside from this view model
@@ -47,7 +50,39 @@ class MovieListVM @Inject constructor(
                     showLoader = event.show
                 )
             }
+            is MovieListEvents.OnMovieDetail -> {
+                movieDetail(event.movieId)
+            }
+            is MovieListEvents.ClearDetail -> {
+                _movieListState.value = _movieListState.value.copy(
+                    movieDetail = MovieDetailData()
+                )
+            }
         }
+    }
+
+    /** API Calling for now playing movies list */
+    private fun movieDetail(movieId : Int) {
+//        _movieListState.value = _movieListState.value.copy(
+//            showLoader = true
+//        )
+        useCaseMovieDetail(
+            movieId = movieId
+        ).onEach {
+            when (it) {
+                is Resource.Success -> {
+                    _movieListState.value = _movieListState.value.copy(
+                        movieDetail = it.data,
+                        showLoader = false
+                    )
+                }
+                is Resource.Error -> {
+                    _movieListState.value = _movieListState.value.copy(
+                        showLoader = false
+                    )
+                }
+            }
+        }.launchIn(viewModelScope)
     }
 
     /** API Calling for now playing movies list */

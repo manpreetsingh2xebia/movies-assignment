@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.xebiaassignment.data.utils.ConnectionState
 import com.xebiaassignment.data.utils.connectivityState
-import com.xebiaassignment.presentation.moviedeail.MovieDetail
+import com.xebiaassignment.presentation.moviedetail.MovieDetail
 import com.xebiaassignment.presentation.movielist.MovieListEvents
 import com.xebiaassignment.presentation.movielist.MovieListScreen
 import com.xebiaassignment.presentation.movielist.MovieListVM
@@ -42,6 +42,7 @@ class MainActivity : ComponentActivity() {
                 if (bottomSheetScaffoldState.bottomSheetState.isExpanded) {
                     coroutineScope.launch {
                         bottomSheetScaffoldState.bottomSheetState.collapse()
+                        movieListVM.onEventChanged(MovieListEvents.ClearDetail)
                     }
                 } else {
                     finish()
@@ -51,7 +52,14 @@ class MainActivity : ComponentActivity() {
                 BottomSheetScaffold(
                     scaffoldState = bottomSheetScaffoldState,
                     sheetContent = {
-                        MovieDetail()
+                        MovieDetail(
+                            movieListVM = movieListVM
+                        ){
+                            coroutineScope.launch {
+                                bottomSheetScaffoldState.bottomSheetState.collapse()
+                                movieListVM.onEventChanged(MovieListEvents.ClearDetail)
+                            }
+                        }
                     },
                     sheetPeekHeight = 0.dp,
                     sheetBackgroundColor = Color.Transparent
@@ -59,6 +67,7 @@ class MainActivity : ComponentActivity() {
                     MovieListScreen(
                         movieListVM = movieListVM,
                         redirectToDetail = {
+                            movieListVM.onEventChanged(MovieListEvents.OnMovieDetail(it))
                             coroutineScope.launch {
                                 bottomSheetScaffoldState.bottomSheetState.expand()
                             }

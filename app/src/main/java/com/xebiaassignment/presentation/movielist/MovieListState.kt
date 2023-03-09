@@ -1,5 +1,6 @@
 package com.xebiaassignment.presentation.movielist
 
+import com.xebiaassignment.domain.model.MovieDetailData
 import com.xebiaassignment.domain.model.NowPlayingData
 import com.xebiaassignment.domain.model.PopularMoviesData
 
@@ -11,4 +12,5 @@ data class MovieListState(
     val showLoader: Boolean = false,
     val nowPlayingList: List<NowPlayingData> = emptyList(),
     val popularMoviesList: List<PopularMoviesData> = emptyList(),
+    val movieDetail: MovieDetailData = MovieDetailData(),
 )

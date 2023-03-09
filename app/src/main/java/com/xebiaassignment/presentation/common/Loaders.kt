@@ -78,7 +78,7 @@ fun LoadingAnimation(
 }
 
 /**
- * Progress showing voting percentage
+ * Custom Progress showing voting percentage
  * */
 @Composable
 fun CircularProgressBar(

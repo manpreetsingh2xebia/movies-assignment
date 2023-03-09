@@ -24,6 +24,7 @@ import com.xebiaassignment.R
 import com.xebiaassignment.domain.model.NowPlayingData
 import com.xebiaassignment.domain.model.PopularMoviesData
 import com.xebiaassignment.presentation.common.AppDivider
+import com.xebiaassignment.presentation.common.CircularProgressBar
 import com.xebiaassignment.presentation.common.CoilImage
 import com.xebiaassignment.presentation.common.LoadingAnimation
 import com.xebiaassignment.presentation.ui.theme.BLACK
@@ -206,11 +207,17 @@ fun CellPopular(
 
             }
 
-            Box(modifier = Modifier.weight(0.2f)) {
-//                CircularProgressBar(
-//                    (item.voteAverage / 10).toFloat(),
-//                    item.voteAverage,
-//                )
+            Box(
+                modifier = Modifier
+                    .padding(
+                        top = dimensionResource(id = R.dimen.size_10dp)
+                    )
+                    .weight(0.2f),
+            ) {
+                CircularProgressBar(
+                    (item.voteAverage / 10).toFloat(),
+                    item.voteAverage,
+                )
             }
         }
 

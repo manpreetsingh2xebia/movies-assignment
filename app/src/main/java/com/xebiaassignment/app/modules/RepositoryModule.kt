@@ -1,8 +1,10 @@
 package com.xebiaassignment.app.modules
 
 import com.xebiaassignment.data.data_source.ApiService
+import com.xebiaassignment.data.repo.MovieDetailRepoImpl
 import com.xebiaassignment.data.repo.NowPlayingMovieImpl
 import com.xebiaassignment.data.repo.PopularMovieImpl
+import com.xebiaassignment.domain.repo.MovieDetailRepo
 import com.xebiaassignment.domain.repo.NowPlayingRepo
 import com.xebiaassignment.domain.repo.PopularMoviesRepo
 import dagger.Module
@@ -25,5 +27,12 @@ object RepositoryModule {
     fun providePopularRepo(apiService: ApiService): PopularMoviesRepo {
         return PopularMovieImpl(apiService)
     }
+
+    @Singleton
+    @Provides
+    fun provideMovieDetailRepo(apiService: ApiService): MovieDetailRepo {
+        return MovieDetailRepoImpl(apiService)
+    }
+
 
 }

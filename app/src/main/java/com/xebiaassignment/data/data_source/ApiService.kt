@@ -2,6 +2,7 @@ package com.xebiaassignment.data.data_source
 
 
 import com.xebiaassignment.BuildConfig
+import com.xebiaassignment.app.AssignmentApp
 import com.xebiaassignment.data.model.MovieDetailResponse
 import com.xebiaassignment.data.model.MovieListResponse
 import com.xebiaassignment.data.utils.ApiConstants
@@ -28,8 +29,8 @@ interface ApiService {
 
     @GET(ApiConstants.MOVIE_DETAIL)
     suspend fun movieDetail(
-        @Path("movie_id") movieId: String,
+        @Path("movie_id") movieId: Int,
         @Query("api_key") api_key: String = BuildConfig.API_KEY,
-        @Query("language") language: String
-    ): Response<MovieDetailResponse>
+        @Query("language") language: String = AssignmentApp.appLanguage
+    ): MovieDetailResponse
 }
