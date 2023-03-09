@@ -11,16 +11,16 @@ import coil.request.ImageRequest
 
 @Composable
 fun CoilImage(
-    src : String,
-    modifier : Modifier = Modifier,
-    contentScale : ContentScale = ContentScale.Fit
-){
+    src: String,
+    modifier: Modifier = Modifier,
+    contentScale: ContentScale = ContentScale.Fit
+) {
 
     val painter = rememberAsyncImagePainter(
         ImageRequest.Builder(LocalContext.current)
             .data(src)
             .apply(
-                block = fun ImageRequest.Builder.(){
+                block = fun ImageRequest.Builder.() {
                     memoryCachePolicy(policy = CachePolicy.ENABLED)
                 }
             ).build()

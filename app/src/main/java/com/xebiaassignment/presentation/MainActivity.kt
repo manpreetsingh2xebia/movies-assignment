@@ -3,113 +3,131 @@ package com.xebiaassignment.presentation
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.Modifier
+import androidx.compose.material.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
-import androidx.navigation.NavType
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import com.xebiaassignment.data.utils.ConnectionState
 import com.xebiaassignment.data.utils.connectivityState
+import com.xebiaassignment.presentation.moviedeail.MovieDetail
 import com.xebiaassignment.presentation.movielist.MovieListEvents
 import com.xebiaassignment.presentation.movielist.MovieListScreen
 import com.xebiaassignment.presentation.movielist.MovieListVM
 import com.xebiaassignment.presentation.ui.theme.XebiaAssignmentTheme
-import com.xebiaassignment.presentation.utils.UiConstants
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
+    @OptIn(ExperimentalMaterialApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
-            val navController = rememberNavController()
-            val movieListVM : MovieListVM = hiltViewModel()
+            val movieListVM: MovieListVM = hiltViewModel()
             ConnectionObserve(movieListVM)
+            val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
+                bottomSheetState = BottomSheetState(BottomSheetValue.Collapsed)
+            )
+            val coroutineScope = rememberCoroutineScope()
+            BackHandler {
+                if (bottomSheetScaffoldState.bottomSheetState.isExpanded) {
+                    coroutineScope.launch {
+                        bottomSheetScaffoldState.bottomSheetState.collapse()
+                    }
+                } else {
+                    finish()
+                }
+            }
             XebiaAssignmentTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
+                BottomSheetScaffold(
+                    scaffoldState = bottomSheetScaffoldState,
+                    sheetContent = {
+                        MovieDetail()
+                    },
+                    sheetPeekHeight = 0.dp,
+                    sheetBackgroundColor = Color.Transparent
                 ) {
-                    // A surface container using the 'background' color from the theme
-                    NavControllerComposable(
-                        navHostController = navController,
-                        movieListVM = movieListVM
+                    MovieListScreen(
+                        movieListVM = movieListVM,
+                        redirectToDetail = {
+                            coroutineScope.launch {
+                                bottomSheetScaffoldState.bottomSheetState.expand()
+                            }
+                        }
                     )
                 }
             }
         }
     }
 
+
     /** INTERNET CONNECTION CHECK */
     @OptIn(ExperimentalCoroutinesApi::class)
     @Composable
     fun ConnectionObserve(
         movieListVM: MovieListVM
-    ){
+    ) {
         // This will call on every network state change
         val connection by connectivityState()
         val isConnected = connection == ConnectionState.Available
         Log.e("NETWORK", "connection${connection}")
         LaunchedEffect(key1 = isConnected, block = {
-            if(isConnected){
+            if (isConnected) {
                 movieListVM.onEventChanged(MovieListEvents.OnInternetConnectionChange(true))
-            }else{
+            } else {
                 movieListVM.onEventChanged(MovieListEvents.OnInternetConnectionChange(false))
             }
         })
     }
 
+    /**
+     * System's Back Press callback
+     * */
     @Composable
-    fun NavControllerComposable(
-        movieListVM: MovieListVM,
-        navHostController: NavHostController
-    ){
-        NavHost(navHostController, startDestination = UiConstants.MOVIE_LIST_SCREEN ){
-            composable(route = UiConstants.MOVIE_LIST_SCREEN){
-                // Movie List screen
-                MovieListScreen(
-                    movieListVM = movieListVM,
-                    redirectToDetail = {
-                        navHostController.navigate(UiConstants.MOVIE_DETAIL_SCREEN+"/$it" )
-                    }
-                )
+    fun BackHandler(enabled: Boolean = true, onBack: () -> Unit) {
+        // Safely update the current `onBack` lambda when a new one is provided
+        val currentOnBack by rememberUpdatedState(onBack)
+        // Remember in Composition a back callback that calls the `onBack` lambda
+        val backCallback = remember {
+            object : OnBackPressedCallback(enabled) {
+                override fun handleOnBackPressed() {
+                    currentOnBack()
+                }
             }
-            composable(
-                route = UiConstants.MOVIE_DETAIL_SCREEN + "/{movieId}",
-                arguments = listOf( navArgument("movieId"){ type = NavType.IntType} )
-            ){
-                val movieId = it.arguments?.getInt("movieId")
-                // Movie detail screen
+        }
+        // On every successful composition, update the callback with the `enabled` value
+        SideEffect {
+            backCallback.isEnabled = enabled
+        }
+        val backDispatcher = checkNotNull(LocalOnBackPressedDispatcherOwner.current) {
+            "No OnBackPressedDispatcherOwner was provided via LocalOnBackPressedDispatcherOwner"
+        }.onBackPressedDispatcher
 
+        val lifecycleOwner = LocalLifecycleOwner.current
+        DisposableEffect(lifecycleOwner, backDispatcher) {
+            backDispatcher.addCallback(lifecycleOwner, backCallback)
+            // When the effect leaves the Composition, remove the callback
+            onDispose {
+                backCallback.remove()
             }
         }
     }
 }
 
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
 
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
     XebiaAssignmentTheme {
-        Greeting("Android")
+
     }
 }

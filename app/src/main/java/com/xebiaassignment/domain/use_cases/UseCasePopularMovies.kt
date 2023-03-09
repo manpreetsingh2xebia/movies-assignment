@@ -1,29 +1,30 @@
 package com.xebiaassignment.domain.use_cases
 
 
-import com.xebiaassignment.data.mappers.nowPlaying
+import com.xebiaassignment.data.mappers.popularMovies
 import com.xebiaassignment.data.utils.Resource
 import com.xebiaassignment.data.utils.ResultWrapper
-import com.xebiaassignment.domain.model.NowPlayingData
-import com.xebiaassignment.domain.repo.NowPlayingRepo
+import com.xebiaassignment.domain.model.PopularMoviesData
+import com.xebiaassignment.domain.repo.PopularMoviesRepo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class UseCaseNwPlaying @Inject constructor(
-    private val nowPlayingRepo: NowPlayingRepo
+class UseCasePopularMovies @Inject constructor(
+    private val popularMoviesRepo: PopularMoviesRepo
 ) {
     operator fun invoke(
         apiKey: String,
         lang: String,
         page: Int
-    ): Flow<Resource<List<NowPlayingData>>> = flow {
-        when (val result = nowPlayingRepo.getNowPlayingMovies(apiKey, lang, page)) {
+    ): Flow<Resource<List<PopularMoviesData>>> = flow {
+
+        when (val result = popularMoviesRepo.getPopularMovies(apiKey, lang, page)) {
             is ResultWrapper.Success -> {
                 val list = if (result.data.results.isNullOrEmpty())
                     emptyList()
                 else
-                    result.data.results.map { it.nowPlaying() }
+                    result.data.results.map { it.popularMovies() }
                 emit(Resource.Success(data = list))
             }
             is ResultWrapper.GenericError -> {

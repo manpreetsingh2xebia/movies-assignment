@@ -14,16 +14,16 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 
 
-sealed class ConnectionState{
+sealed class ConnectionState {
     object Available : ConnectionState()
     object Unavailable : ConnectionState()
 }
 
 @ExperimentalCoroutinesApi
-fun Context.observeConnectivityAsFlow() = callbackFlow{
+fun Context.observeConnectivityAsFlow() = callbackFlow {
     val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
-    val callback = networkCallback { connectionState -> trySend(connectionState)}
+    val callback = networkCallback { connectionState -> trySend(connectionState) }
 
     connectivityManager.registerDefaultNetworkCallback(callback)
 
@@ -39,16 +39,17 @@ fun Context.observeConnectivityAsFlow() = callbackFlow{
 
 fun getCurrentState(
     connectivityManager: ConnectivityManager
-) : ConnectionState{
+): ConnectionState {
     val connected = connectivityManager.allNetworks.any {
-        connectivityManager.getNetworkCapabilities(it)?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)?:false
+        connectivityManager.getNetworkCapabilities(it)
+            ?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) ?: false
     }
 
-    return if(connected) ConnectionState.Available else ConnectionState.Unavailable
+    return if (connected) ConnectionState.Available else ConnectionState.Unavailable
 }
 
-fun networkCallback (callback : (ConnectionState) -> Unit) : NetworkCallback{
-    return object : NetworkCallback(){
+fun networkCallback(callback: (ConnectionState) -> Unit): NetworkCallback {
+    return object : NetworkCallback() {
         override fun onAvailable(network: Network) {
             super.onAvailable(network)
             callback(ConnectionState.Available)
@@ -59,30 +60,25 @@ fun networkCallback (callback : (ConnectionState) -> Unit) : NetworkCallback{
             callback(ConnectionState.Unavailable)
         }
 
-        override fun onCapabilitiesChanged(
-            network: Network,
-            networkCapabilities: NetworkCapabilities
-        ) {
-            super.onCapabilitiesChanged(network, networkCapabilities)
-        }
     }
 }
 
-val Context.currentConnectivityState : ConnectionState
-  get() {
-      val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-      return getCurrentState(connectivityManager)
-  }
+val Context.currentConnectivityState: ConnectionState
+    get() {
+        val connectivityManager =
+            getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        return getCurrentState(connectivityManager)
+    }
 
 
 @ExperimentalCoroutinesApi
 @Composable
-fun connectivityState () : State<ConnectionState>{
+fun connectivityState(): State<ConnectionState> {
 
     val context = LocalContext.current
     return produceState(
         initialValue = context.currentConnectivityState
-    ){
-        context.observeConnectivityAsFlow().collect{ value = it}
+    ) {
+        context.observeConnectivityAsFlow().collect { value = it }
     }
 }

@@ -6,10 +6,8 @@ import dagger.hilt.android.HiltAndroidApp
 @HiltAndroidApp
 class AssignmentApp : Application() {
 
-    companion object{
-        var appLanguage : String = "en-US"
+    companion object {
+        var appLanguage: String = "en-US"
     }
-    override fun onCreate() {
-        super.onCreate()
-    }
+
 }

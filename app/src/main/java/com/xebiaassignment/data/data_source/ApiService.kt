@@ -1,7 +1,6 @@
 package com.xebiaassignment.data.data_source
 
 
-
 import com.xebiaassignment.BuildConfig
 import com.xebiaassignment.data.model.MovieDetailResponse
 import com.xebiaassignment.data.model.MovieListResponse
@@ -15,22 +14,22 @@ interface ApiService {
 
     @GET(ApiConstants.POPULAR)
     suspend fun popularMovies(
-        @Query("api_key")  api_key : String = BuildConfig.API_KEY,
-        @Query("language")  language : String,
-        @Query("page")  page : Int,
-    ) : MovieListResponse
+        @Query("api_key") api_key: String = BuildConfig.API_KEY,
+        @Query("language") language: String,
+        @Query("page") page: Int,
+    ): MovieListResponse
 
     @GET(ApiConstants.NOW_PLAYING)
     suspend fun nowPlaying(
-        @Query("api_key")  api_key : String = BuildConfig.API_KEY,
-        @Query("language")  language : String,
-        @Query("page")  page : Int,
-    ) : MovieListResponse
+        @Query("api_key") api_key: String = BuildConfig.API_KEY,
+        @Query("language") language: String,
+        @Query("page") page: Int,
+    ): MovieListResponse
 
     @GET(ApiConstants.MOVIE_DETAIL)
     suspend fun movieDetail(
-        @Path("movie_id") movieId : String,
-        @Query("api_key")  api_key : String = BuildConfig.API_KEY,
-        @Query("language")  language : String
-    ) : Response<MovieDetailResponse>
+        @Path("movie_id") movieId: String,
+        @Query("api_key") api_key: String = BuildConfig.API_KEY,
+        @Query("language") language: String
+    ): Response<MovieDetailResponse>
 }
