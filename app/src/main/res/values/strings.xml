@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Xebia Assignment</string>
+    <string name="playing_now">Playing Now</string>
+    <string name="most_popular">Most Popular</string>
+    <string name="movies">Movies</string>
+    <string name="please_check_yout_internet_connection">Please check you internet connection</string>
 </resources>
