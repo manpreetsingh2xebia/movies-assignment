@@ -40,7 +40,6 @@ fun InternetConnectionDialog(){
                                 top = dimensionResource(id = R.dimen.size_10dp)
                             )
                     )
-
                 }
             }
         )

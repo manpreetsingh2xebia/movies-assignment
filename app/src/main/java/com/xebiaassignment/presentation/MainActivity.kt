@@ -15,12 +15,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.xebiaassignment.data.utils.ConnectionState
 import com.xebiaassignment.data.utils.connectivityState
 import com.xebiaassignment.presentation.movielist.MovieListEvents
+import com.xebiaassignment.presentation.movielist.MovieListScreen
 import com.xebiaassignment.presentation.movielist.MovieListVM
 import com.xebiaassignment.presentation.ui.theme.XebiaAssignmentTheme
+import com.xebiaassignment.presentation.utils.UiConstants
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -29,7 +35,6 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContent {
             val navController = rememberNavController()
             val movieListVM : MovieListVM = hiltViewModel()
@@ -41,21 +46,16 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     // A surface container using the 'background' color from the theme
-
-                    Surface(
-                        modifier = Modifier.fillMaxSize(),
-                        color = MaterialTheme.colors.background
-                    ) {
-                        NavControllerComposable(
-                            navHostController = navController,
-                            movieListVM = movieListVM
-                        )
-                    }
+                    NavControllerComposable(
+                        navHostController = navController,
+                        movieListVM = movieListVM
+                    )
                 }
             }
         }
     }
 
+    /** INTERNET CONNECTION CHECK */
     @OptIn(ExperimentalCoroutinesApi::class)
     @Composable
     fun ConnectionObserve(
@@ -79,7 +79,25 @@ class MainActivity : ComponentActivity() {
         movieListVM: MovieListVM,
         navHostController: NavHostController
     ){
+        NavHost(navHostController, startDestination = UiConstants.MOVIE_LIST_SCREEN ){
+            composable(route = UiConstants.MOVIE_LIST_SCREEN){
+                // Movie List screen
+                MovieListScreen(
+                    movieListVM = movieListVM,
+                    redirectToDetail = {
+                        navHostController.navigate(UiConstants.MOVIE_DETAIL_SCREEN+"/$it" )
+                    }
+                )
+            }
+            composable(
+                route = UiConstants.MOVIE_DETAIL_SCREEN + "/{movieId}",
+                arguments = listOf( navArgument("movieId"){ type = NavType.IntType} )
+            ){
+                val movieId = it.arguments?.getInt("movieId")
+                // Movie detail screen
 
+            }
+        }
     }
 }
 
