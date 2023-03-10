@@ -11,7 +11,7 @@ App features :
        <li>Most popular</li>
     </ul>
  </li>
- <li>Movie detail - information about specific movie</li>
+ <li>Movie detail - information about specific movie.</li>
 </ul>
 
 # Movie Listing Screen
@@ -42,7 +42,7 @@ and higly testable.
   <li>Domain - This layer contains the core business logic of the application. it include the model, repo, use cases. This layer is independent of any 
   framework and can be tested independently.</li>
   <li>Presentation - This layer contains the user interface of the application and handling user inputs. This layer also inclues the view model which 
-  is responsible for managing UI state and surviving configuration changes</li>
+  is responsible for managing UI state and surviving configuration changes.</li>
 </ul>
 
 # Library used in this applicaiton
