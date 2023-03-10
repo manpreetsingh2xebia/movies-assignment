@@ -45,7 +45,7 @@ and higly testable.
   is responsible for managing UI state and surviving configuration changes.</li>
 </ul>
 
-# Library used in this applicaiton
+# Library used in this application
 
 <ul style="list-style-type:circle">
   <li><a href="https://developer.android.com/jetpack/compose?gclid=EAIaIQobChMIpKSisODQ_QIVQUorCh2xYQTZEAAYASAAEgK0r_D_BwE&gclsrc=aw.ds">Jetpack Compose</a></li>
@@ -54,7 +54,7 @@ and higly testable.
    <li><a href="https://square.github.io/retrofit/">Retrofit</a></li>
 </ul>
 
-#TODO
+# TODO
 
 <ul style="list-style-type:circle">
   <li>Unit tests.</li>
