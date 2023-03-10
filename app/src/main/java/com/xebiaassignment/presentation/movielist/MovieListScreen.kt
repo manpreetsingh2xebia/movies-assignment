@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -38,6 +39,7 @@ fun MovieListScreen(
     redirectToDetail: (Int) -> Unit
 ) {
     val state = movieListVM?.state?.value
+
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -68,6 +70,23 @@ fun MovieListScreen(
                     ) {
                         LoadingAnimation(
                             circleColor = Color.Yellow
+                        )
+                    }
+
+                }else if (state?.showError == true) {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = state.message,
+                            style = TextStyle(
+                                color = Color.Red,
+                                fontSize = dimensionResource(id = R.dimen.txt_size_16).value.sp
+                            ),
+                            fontWeight = FontWeight.SemiBold,
+                            modifier = Modifier
+                                .padding(dimensionResource(id = R.dimen.size_10dp))
                         )
                     }
 
@@ -227,6 +246,4 @@ fun CellPopular(
             modifier = Modifier.fillMaxWidth()
         )
     }
-
-
 }

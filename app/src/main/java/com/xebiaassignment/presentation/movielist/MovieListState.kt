@@ -10,6 +10,10 @@ import com.xebiaassignment.domain.model.PopularMoviesData
 data class MovieListState(
     val showInterConnectionDialog: Boolean = false,
     val showLoader: Boolean = false,
+    val showError: Boolean = false,
+    val message: String = "",
+    val showLoaderOnBottomSheet: Boolean = false,
+    val movieId: Int ?= null,
     val nowPlayingList: List<NowPlayingData> = emptyList(),
     val popularMoviesList: List<PopularMoviesData> = emptyList(),
     val movieDetail: MovieDetailData = MovieDetailData(),

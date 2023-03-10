@@ -1,5 +1,6 @@
 package com.xebiaassignment.presentation.movielist
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -53,6 +54,11 @@ class MovieListVM @Inject constructor(
             is MovieListEvents.OnMovieDetail -> {
                 movieDetail(event.movieId)
             }
+            is MovieListEvents.SetMovieId -> {
+                _movieListState.value = _movieListState.value.copy(
+                    movieId = event.movieId
+                )
+            }
             is MovieListEvents.ClearDetail -> {
                 _movieListState.value = _movieListState.value.copy(
                     movieDetail = MovieDetailData()
@@ -63,9 +69,9 @@ class MovieListVM @Inject constructor(
 
     /** API Calling for now playing movies list */
     private fun movieDetail(movieId : Int) {
-//        _movieListState.value = _movieListState.value.copy(
-//            showLoader = true
-//        )
+        _movieListState.value = _movieListState.value.copy(
+            showLoaderOnBottomSheet = true
+        )
         useCaseMovieDetail(
             movieId = movieId
         ).onEach {
@@ -73,12 +79,13 @@ class MovieListVM @Inject constructor(
                 is Resource.Success -> {
                     _movieListState.value = _movieListState.value.copy(
                         movieDetail = it.data,
-                        showLoader = false
+                        showLoaderOnBottomSheet = false
                     )
                 }
                 is Resource.Error -> {
                     _movieListState.value = _movieListState.value.copy(
-                        showLoader = false
+                        showLoaderOnBottomSheet = false,
+                        message = it.message
                     )
                 }
             }
@@ -88,7 +95,9 @@ class MovieListVM @Inject constructor(
     /** API Calling for now playing movies list */
     private fun nowPlaying() {
         _movieListState.value = _movieListState.value.copy(
+            showError = false,
             showLoader = true
+
         )
         useCaseNwPlaying(
             apiKey = BuildConfig.API_KEY,
@@ -99,12 +108,15 @@ class MovieListVM @Inject constructor(
                 is Resource.Success -> {
                     _movieListState.value = _movieListState.value.copy(
                         nowPlayingList = it.data,
+                        showError = false,
                         showLoader = false
                     )
                 }
                 is Resource.Error -> {
                     _movieListState.value = _movieListState.value.copy(
-                        showLoader = false
+                        showLoader = false,
+                        showError = true,
+                        message = it.message
                     )
                 }
             }
@@ -122,12 +134,15 @@ class MovieListVM @Inject constructor(
                 is Resource.Success -> {
                     _movieListState.value = _movieListState.value.copy(
                         popularMoviesList = it.data,
-                        showLoader = false
+                        showLoader = false,
+                        showError = false
                     )
                 }
                 is Resource.Error -> {
                     _movieListState.value = _movieListState.value.copy(
-                        showLoader = false
+                        showLoader = false,
+                        showError = true,
+                        message = it.message
                     )
                 }
             }

@@ -48,6 +48,7 @@ class MainActivity : ComponentActivity() {
                     finish()
                 }
             }
+
             XebiaAssignmentTheme {
                 BottomSheetScaffold(
                     scaffoldState = bottomSheetScaffoldState,
