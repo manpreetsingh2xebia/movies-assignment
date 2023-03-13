@@ -31,10 +31,16 @@ suspend fun <T> safeApiCall(
                 }
                 is HttpException -> {
                     val code = throwable.code()
-                    val errorBody = throwable.response()?.errorBody()?.string()
-                    val json = JSONObject(errorBody ?: "")
-                    val message = json.getString("status_message")
-                    ResultWrapper.GenericError(code = code, message = message)
+                    val msg = if(throwable.response()?.errorBody() != null){
+                        val errorBody = throwable.response()?.errorBody()?.string()
+                        val json = JSONObject(errorBody?:"")
+                        if(json.has("status_message"))
+                            json.getString("status_message")
+                        else
+                            "Something went wrong"
+                    }else "Something went wrong"
+
+                    ResultWrapper.GenericError(code = code, message = msg)
                 }
                 else -> {
                     ResultWrapper.GenericError(code = null, message = throwable.message)
