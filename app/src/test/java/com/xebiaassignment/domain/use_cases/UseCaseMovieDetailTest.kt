@@ -3,12 +3,10 @@ package com.xebiaassignment.domain.use_cases
 import com.google.common.truth.Truth
 import com.xebiaassignment.data.model.GenresItem
 import com.xebiaassignment.data.model.MovieDetailResponse
-import com.xebiaassignment.data.model.MovieListResponse
 import com.xebiaassignment.data.utils.Resource
 import com.xebiaassignment.data.utils.ResultWrapper
 import com.xebiaassignment.domain.model.MovieDetailData
 import com.xebiaassignment.domain.repo.MovieDetailRepo
-import com.xebiaassignment.domain.repo.NowPlayingRepo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
@@ -70,6 +68,8 @@ class UseCaseMovieDetailTest{
         )
     )
 
+
+    @ExperimentalCoroutinesApi
     private var testDispatcher = StandardTestDispatcher()
 
     @Mock
@@ -78,6 +78,7 @@ class UseCaseMovieDetailTest{
     @Mock
     lateinit var movieDetailRepo: MovieDetailRepo
 
+    @ExperimentalCoroutinesApi
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
@@ -116,7 +117,7 @@ class UseCaseMovieDetailTest{
         Truth.assertThat((result as Resource.Error).message).isEqualTo("Invalid Id")
     }
 
-
+    @ExperimentalCoroutinesApi
     @Test
     fun tearDown() {
         Dispatchers.resetMain()

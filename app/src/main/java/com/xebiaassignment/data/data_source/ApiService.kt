@@ -6,7 +6,6 @@ import com.xebiaassignment.app.AssignmentApp
 import com.xebiaassignment.data.model.MovieDetailResponse
 import com.xebiaassignment.data.model.MovieListResponse
 import com.xebiaassignment.data.utils.ApiConstants
-import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query

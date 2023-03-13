@@ -2,13 +2,10 @@ package com.xebiaassignment.domain.use_cases
 
 
 import com.xebiaassignment.data.mappers.movieDetail
-import com.xebiaassignment.data.mappers.nowPlaying
 import com.xebiaassignment.data.utils.Resource
 import com.xebiaassignment.data.utils.ResultWrapper
 import com.xebiaassignment.domain.model.MovieDetailData
-import com.xebiaassignment.domain.model.NowPlayingData
 import com.xebiaassignment.domain.repo.MovieDetailRepo
-import com.xebiaassignment.domain.repo.NowPlayingRepo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject

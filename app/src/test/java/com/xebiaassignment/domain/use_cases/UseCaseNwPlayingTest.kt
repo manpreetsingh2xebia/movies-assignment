@@ -23,7 +23,7 @@ import org.mockito.MockitoAnnotations
 
 class UseCaseNwPlayingTest {
 
-    val listOfMovieList = listOf<MovieItem>(
+    val listOfMovieList = listOf(
         MovieItem(
             id = 1,
             posterPath = "image.png",
@@ -42,7 +42,7 @@ class UseCaseNwPlayingTest {
         )
     )
 
-    val expectedNowPlaying = listOf<NowPlayingData>(
+    val expectedNowPlaying = listOf(
         NowPlayingData(
             id = 1,
             imagePath = "image.png",
@@ -53,7 +53,7 @@ class UseCaseNwPlayingTest {
         )
     )
 
-
+    @ExperimentalCoroutinesApi
     private var testDispatcher = StandardTestDispatcher()
 
     @Mock
@@ -62,13 +62,14 @@ class UseCaseNwPlayingTest {
     @Mock
     lateinit var nowPlayingRepo: NowPlayingRepo
 
+    @ExperimentalCoroutinesApi
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
         MockitoAnnotations.openMocks(this)
     }
 
-
+    @ExperimentalCoroutinesApi
     @Test
     fun tearDown() {
         Dispatchers.resetMain()

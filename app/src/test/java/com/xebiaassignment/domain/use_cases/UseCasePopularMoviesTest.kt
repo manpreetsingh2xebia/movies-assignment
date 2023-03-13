@@ -5,17 +5,12 @@ import com.xebiaassignment.data.model.MovieItem
 import com.xebiaassignment.data.model.MovieListResponse
 import com.xebiaassignment.data.utils.Resource
 import com.xebiaassignment.data.utils.ResultWrapper
-import com.xebiaassignment.domain.model.NowPlayingData
 import com.xebiaassignment.domain.model.PopularMoviesData
-import com.xebiaassignment.domain.repo.NowPlayingRepo
 import com.xebiaassignment.domain.repo.PopularMoviesRepo
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.take
-import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -28,7 +23,7 @@ import org.mockito.MockitoAnnotations
 
 class UseCasePopularMoviesTest {
 
-    val listOfMovieList = listOf<MovieItem>(
+    val listOfMovieList = listOf(
         MovieItem(
             id = 1,
             posterPath = "image.png",
@@ -47,7 +42,7 @@ class UseCasePopularMoviesTest {
         )
     )
 
-    val expectedPopular = listOf<PopularMoviesData>(
+    val expectedPopular = listOf(
         PopularMoviesData(
             id = 1,
             imagePath = "image.png",
@@ -66,7 +61,7 @@ class UseCasePopularMoviesTest {
         )
     )
 
-
+    @ExperimentalCoroutinesApi
     private var testDispatcher = StandardTestDispatcher()
 
     @Mock
@@ -75,13 +70,14 @@ class UseCasePopularMoviesTest {
     @Mock
     lateinit var popularMovieRepo: PopularMoviesRepo
 
+    @ExperimentalCoroutinesApi
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
         MockitoAnnotations.openMocks(this)
     }
 
-
+    @ExperimentalCoroutinesApi
     @Test
     fun tearDown() {
         Dispatchers.resetMain()
