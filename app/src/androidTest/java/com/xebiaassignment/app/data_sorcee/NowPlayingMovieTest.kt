@@ -49,7 +49,7 @@ class NowPlayingMovieTest {
 
     @ExperimentalCoroutinesApi
     @Test(expected = JsonSyntaxException::class)
-    fun testGetPopularMovies_ifJsonSyntaxException() = runTest {
+    fun testGet_now_Movies_ifJsonSyntaxException() = runTest {
         val mockResponse = MockResponse()
         mockResponse.setBody("[]")
         mockWebServer.enqueue(mockResponse)
@@ -62,7 +62,7 @@ class NowPlayingMovieTest {
 
     @ExperimentalCoroutinesApi
     @Test
-    fun testGetPopularMovies_ifResultIsNotEmpty() = runTest {
+    fun testGet_now_Movies_ifResultIsNotEmpty() = runTest {
         //Arrange
         val mockResponse = MockResponse()
         val resourceContent = FileReader.readFileFromResource("/responsemovieslist.json")
@@ -83,7 +83,7 @@ class NowPlayingMovieTest {
 
     @ExperimentalCoroutinesApi
     @Test
-    fun testGetPopularMovies_ifInternalServerError() = runTest {
+    fun testGet_now_Movies_ifInternalServerError() = runTest {
         //Arrange
         val mockResponse = MockResponse()
         val resourceContent = FileReader.readFileFromResource("/responsemovieslist.json")
